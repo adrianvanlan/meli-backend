@@ -2,6 +2,13 @@ const request = require('supertest');
 const app = require('../app');
 
 describe('Items Endpoints', () => {
+  it('should get item by id', async () => {
+    const id = 'MLA901420817';
+    const response = await request(app).get(`/api/items/${id}`);
+    expect(response.statusCode).toEqual(200);
+    expect(response.body).toHaveProperty('item');
+  });
+
   it('should search items by query', async () => {
     const searchQuery = 'Iphone';
     const response = await request(app).get(`/api/items?q=${searchQuery}`);

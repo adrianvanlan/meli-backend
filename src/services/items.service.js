@@ -1,37 +1,10 @@
 const axios = require('axios');
 const variables = require('../common/variables');
-const formatNumber = require('../common/formatNumber');
-
-const getCategories = (filters) => {
-  const categoryFilter = filters.find((filter) => filter.id === 'category');
-
-  if (!categoryFilter) {
-    return [];
-  }
-
-  const categories = categoryFilter.values[0].path_from_root;
-  return categories.map((category) => category.name) || [];
-};
-
-const parseItems = (items, currencies) => {
-  return items.map((item) => ({
-    id: item.id,
-    title: item.title,
-    picture: item.thumbnail,
-    condition: item.condition,
-    free_shipping:
-      item.shipping && item.shipping.free_shipping
-        ? item.shipping.free_shipping
-        : false,
-    price: {
-      currency:
-        currencies.find((currency) => currency.id === item.currency_id)
-          .symbol || '$',
-      amount: formatNumber.extractInteger(item.price),
-      decimals: formatNumber.extractDecimal(item.price),
-    },
-  }));
-};
+const {
+  parseItem,
+  parseItems,
+  getCategories,
+} = require('./items.service.utils');
 
 const getItems = async (
   query,
@@ -63,6 +36,38 @@ const getItems = async (
     });
 };
 
+const getItem = async (id, currencies) => {
+  return axios
+    .get(`${variables.SERVICE_URL_BASE}/items/${id}`)
+    .then(async (response) => {
+      const item = parseItem(response.data, currencies);
+      const description = await getItemDescription(id);
+
+      return {
+        item: {
+          ...item,
+          description,
+        },
+      };
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+const getItemDescription = async (id) => {
+  return axios
+    .get(`${variables.SERVICE_URL_BASE}/items/${id}/description`)
+    .then((response) => {
+      return response.data.plain_text || '';
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
 module.exports = {
+  getItem,
+  getItemDescription,
   getItems,
 };
