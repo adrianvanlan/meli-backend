@@ -10,7 +10,7 @@ const {
 
 const router = express.Router();
 
+router.get('/', listItemsValidator, listItemsController);
 router.get('/:id', getItemValidator, getItemController);
-router.get('', listItemsValidator, listItemsController);
 
 module.exports = router;
