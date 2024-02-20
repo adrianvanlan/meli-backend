@@ -6,7 +6,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const middlewares = require('./middlewares');
-const routes = require('./routes');
+const itemsRoutes = require('./routes/items.routes');
 
 const app = express();
 
@@ -15,7 +15,7 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/', routes);
+app.use('/api/items', itemsRoutes);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
