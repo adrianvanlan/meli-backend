@@ -53,6 +53,47 @@ const MOCK_CURRENCIES = [
 jest.mock('axios');
 
 describe('Items List Services', () => {
+  it('getItem for item must contain keys "item"', async () => {
+    axios.get.mockImplementation(() =>
+      Promise.resolve({ data: MOCK_ITEMS.results[0] }),
+    );
+    const item = await itemsService.getItem('MLA1397418693', MOCK_CURRENCIES);
+
+    expect(item.item).toStrictEqual({
+      id: MOCK_ITEMS.results[0].id,
+      title: MOCK_ITEMS.results[0].title,
+      picture: MOCK_ITEMS.results[0].thumbnail,
+      condition: MOCK_ITEMS.results[0].condition,
+      free_shipping: false,
+      price: {
+        currency: '$',
+        amount: 633598,
+        decimals: 80,
+      },
+      description: '',
+    });
+  });
+
+  it('get description for item must return description text', async () => {
+    axios.get.mockImplementation(() =>
+      Promise.resolve({
+        data: {
+          plain_text: 'description',
+        },
+      }),
+    );
+    const description = await itemsService.getItemDescription('MLA1397418693');
+    expect(description).toBe('description');
+  });
+
+  it('getItem for item must return an error', async () => {
+    try {
+      await itemsService.getItem('MLA1397418693', MOCK_CURRENCIES);
+    } catch (error) {
+      expect(error).toBe('error');
+    }
+  });
+
   it('getItems for list items must contain keys "items" & "categories"', async () => {
     axios.get.mockImplementation(() => Promise.resolve({ data: MOCK_ITEMS }));
     const items = await itemsService.getItems('iphone', MOCK_CURRENCIES);
