@@ -1,6 +1,5 @@
 const itemsService = require('../services/items.service');
 const variables = require('../common/variables');
-const currenciesService = require('../services/currencies.service');
 const { validationResult } = require('express-validator');
 
 const listItemsController = async (req, res) => {
@@ -12,10 +11,8 @@ const listItemsController = async (req, res) => {
 
   const { q } = req.query;
 
-  const currencies = await currenciesService.getCurrencies();
-
   await itemsService
-    .getItems(q, currencies)
+    .getItems(q)
     .then((data) => {
       res.status(200).json({
         author: variables.AUTHOR,
@@ -36,10 +33,8 @@ const getItemController = async (req, res) => {
 
   const { id } = req.params;
 
-  const currencies = await currenciesService.getCurrencies();
-
   await itemsService
-    .getItem(id, currencies)
+    .getItem(id)
     .then((data) => {
       res.status(200).json({
         author: variables.AUTHOR,

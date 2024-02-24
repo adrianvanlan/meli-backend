@@ -39,17 +39,6 @@ const MOCK_ITEMS = {
   ],
 };
 
-const MOCK_CURRENCIES = [
-  {
-    id: 'ARS',
-    symbol: '$',
-  },
-  {
-    id: 'USD',
-    symbol: 'U$S',
-  },
-];
-
 jest.mock('axios');
 
 describe('Items List Services', () => {
@@ -57,7 +46,7 @@ describe('Items List Services', () => {
     axios.get.mockImplementation(() =>
       Promise.resolve({ data: MOCK_ITEMS.results[0] }),
     );
-    const item = await itemsService.getItem('MLA1397418693', MOCK_CURRENCIES);
+    const item = await itemsService.getItem('MLA1397418693');
 
     expect(item.item).toStrictEqual({
       id: MOCK_ITEMS.results[0].id,
@@ -66,7 +55,7 @@ describe('Items List Services', () => {
       condition: MOCK_ITEMS.results[0].condition,
       free_shipping: false,
       price: {
-        currency: '$',
+        currency: 'ARS',
         amount: 633598,
         decimals: 80,
       },
@@ -88,7 +77,7 @@ describe('Items List Services', () => {
 
   it('getItem for item must return an error', async () => {
     try {
-      await itemsService.getItem('MLA1397418693', MOCK_CURRENCIES);
+      await itemsService.getItem('MLA1397418693');
     } catch (error) {
       expect(error).toBe('error');
     }
@@ -96,7 +85,7 @@ describe('Items List Services', () => {
 
   it('getItems for list items must contain keys "items" & "categories"', async () => {
     axios.get.mockImplementation(() => Promise.resolve({ data: MOCK_ITEMS }));
-    const items = await itemsService.getItems('iphone', MOCK_CURRENCIES);
+    const items = await itemsService.getItems('iphone');
 
     expect(items.categories).toStrictEqual([
       'Celulares y Teléfonos',
@@ -110,7 +99,7 @@ describe('Items List Services', () => {
         condition: MOCK_ITEMS.results[0].condition,
         free_shipping: false,
         price: {
-          currency: '$',
+          currency: 'ARS',
           amount: 633598,
           decimals: 80,
         },
@@ -120,7 +109,7 @@ describe('Items List Services', () => {
 
   it('getItems for list items must return an error', async () => {
     try {
-      await itemsService.getItems('iphone', MOCK_CURRENCIES);
+      await itemsService.getItems('iphone');
     } catch (error) {
       expect(error).toBe('error');
     }

@@ -11,10 +11,7 @@ const getCategories = (filters) => {
   return categories.map((category) => category.name) || [];
 };
 
-const parseItem = (item, currencies) => {
-  const currency = currencies.find(
-    (currency) => currency.id === item.currency_id,
-  );
+const parseItem = (item) => {
   return {
     id: item.id,
     title: item.title,
@@ -25,15 +22,15 @@ const parseItem = (item, currencies) => {
         ? item.shipping.free_shipping
         : false,
     price: {
-      currency: currency ? currency.symbol : '$',
+      currency: item.currency_id,
       amount: formatNumber.extractInteger(item.price),
       decimals: formatNumber.extractDecimal(item.price),
     },
   };
 };
 
-const parseItems = (items, currencies) => {
-  return items.map((item) => parseItem(item, currencies));
+const parseItems = (items) => {
+  return items.map((item) => parseItem(item));
 };
 
 module.exports = {

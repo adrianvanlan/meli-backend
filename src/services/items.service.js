@@ -6,11 +6,7 @@ const {
   getCategories,
 } = require('./items.service.utils');
 
-const getItems = async (
-  query,
-  currencies,
-  limit = variables.MAX_RESULTS_LIST_ITEMS,
-) => {
+const getItems = async (query, limit = variables.MAX_RESULTS_LIST_ITEMS) => {
   return axios
     .get(
       `${variables.SERVICE_URL_BASE}/sites/MLA/search?q=${query}&limit=${limit}`,
@@ -28,7 +24,7 @@ const getItems = async (
 
       return {
         categories: getCategories(filters),
-        items: parseItems(items, currencies),
+        items: parseItems(items),
       };
     })
     .catch((error) => {
@@ -36,11 +32,11 @@ const getItems = async (
     });
 };
 
-const getItem = async (id, currencies) => {
+const getItem = async (id) => {
   return axios
     .get(`${variables.SERVICE_URL_BASE}/items/${id}`)
     .then(async (response) => {
-      const item = parseItem(response.data, currencies);
+      const item = parseItem(response.data);
       const description = await getItemDescription(id);
 
       return {
