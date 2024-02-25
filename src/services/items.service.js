@@ -38,11 +38,13 @@ const getItem = async (id) => {
     .then(async (response) => {
       const item = parseItem(response.data);
       const description = await getItemDescription(id);
+      const categories = await getItemCategories(response.data.category_id);
 
       return {
         item: {
           ...item,
           description,
+          categories,
         },
       };
     })
@@ -56,6 +58,20 @@ const getItemDescription = async (id) => {
     .get(`${variables.SERVICE_URL_BASE}/items/${id}/description`)
     .then((response) => {
       return response.data.plain_text || '';
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+const getItemCategories = async (id) => {
+  return axios
+    .get(`${variables.SERVICE_URL_BASE}/categories/${id}`)
+    .then((response) => {
+      if (!response.data.path_from_root) {
+        return [];
+      }
+      return response.data.path_from_root.map((category) => category.name);
     })
     .catch((error) => {
       throw error;

@@ -59,7 +59,9 @@ describe('Items List Services', () => {
         amount: 633598,
         decimals: 80,
       },
+      sold_quantity: 0,
       description: '',
+      categories: [],
     });
   });
 
@@ -103,6 +105,7 @@ describe('Items List Services', () => {
           amount: 633598,
           decimals: 80,
         },
+        sold_quantity: 0,
       },
     ]);
   });

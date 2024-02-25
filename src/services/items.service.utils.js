@@ -12,10 +12,14 @@ const getCategories = (filters) => {
 };
 
 const parseItem = (item) => {
+  const picture =
+    item.pictures && item.pictures.length > 0
+      ? item.pictures[0].secure_url
+      : item.thumbnail || '';
+
   return {
     id: item.id,
     title: item.title,
-    picture: item.thumbnail,
     condition: item.condition,
     free_shipping:
       item.shipping && item.shipping.free_shipping
@@ -26,6 +30,8 @@ const parseItem = (item) => {
       amount: formatNumber.extractInteger(item.price),
       decimals: formatNumber.extractDecimal(item.price),
     },
+    sold_quantity: item.sold_quantity || 0,
+    picture,
   };
 };
 
